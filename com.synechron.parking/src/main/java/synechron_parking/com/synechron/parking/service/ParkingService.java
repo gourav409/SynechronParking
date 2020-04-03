@@ -8,6 +8,6 @@ import synechron_parking.com.synechron.parking.model.Vehicle;
 public interface ParkingService extends AbstractService {
 	
 	public Optional<Integer> park(Vehicle vehicle) throws ParkingException;
-	public boolean unPark(int slotNumber) throws ParkingException;
+	public Optional<Integer> unPark(Vehicle vehicle) throws ParkingException;
 
 }

@@ -8,7 +8,7 @@ public interface ParkingDataManager<T extends Vehicle> {
 	
 	public int parkCar(T vehicle);
 	
-	public boolean leaveCar(int slotNumber);
+	public int leaveCar(T vehicle);
 	
 	public List<String> getStatus();
 

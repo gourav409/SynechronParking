@@ -25,8 +25,10 @@ public class ParkingServiceImpl implements ParkingService {
 			value = Optional.of(parkingManager.parkCar(vehicle));
 			if (value.get() == -1)
 				System.out.println("Sorry, parking lot is full");
+			if (value.get() == -2)
+				System.out.println("Sorry, Vehicle "+vehicle.getRegistrationNumber()+" already parked");
 			else
-				System.out.println("Allocated slot number: " + value.get());
+				System.out.println("Vehicle "+vehicle.getRegistrationNumber()+" allocated at slot number: " + value.get());
 		}
 		catch (Exception e)
 		{
@@ -35,15 +37,15 @@ public class ParkingServiceImpl implements ParkingService {
 		return value;
 	}
 
-	public boolean unPark(int slotNumber) throws ParkingException {
-		boolean value;
+	public Optional<Integer> unPark(Vehicle vehicle) throws ParkingException {
+		Optional<Integer> value = Optional.empty();
 		try
 		{
-			value = parkingManager.leaveCar(slotNumber);
-			if (!value)
+			value = Optional.of(parkingManager.leaveCar(vehicle));
+			if (value.get() == -1)
 				System.out.println("Sorry, The slot was already empty");
 			else
-				System.out.println("Deallocated slot number: " + slotNumber);
+				System.out.println("Vehicle "+vehicle.getRegistrationNumber()+" is deallocated from slot number: " + value.get());
 		}
 		catch (Exception e)
 		{

@@ -12,7 +12,7 @@ public class ParkingDataManagerImpl<T extends Vehicle> implements ParkingDataMan
 
 	private int[] parkSlot = new int[500];
 	
-	private Map<Integer, T> parkingMap = new HashMap<Integer, T>();
+	private Map<T, Integer> parkingMap = new HashMap<T, Integer>();
 	
 	private static ParkingDataManagerImpl instance = null;
 	
@@ -37,7 +37,10 @@ public class ParkingDataManagerImpl<T extends Vehicle> implements ParkingDataMan
 	public int parkCar(T vehicle) {
 		for(int i = 0; i < parkSlot.length; i++) {
 			if(parkSlot[i] == 0) {
-				parkingMap.put(i, vehicle);
+				if(parkingMap.containsKey(vehicle)) {
+					return -2;
+				}
+				parkingMap.put(vehicle, i);
 				parkSlot[i] = 1;
 				return i;
 			}
@@ -45,18 +48,27 @@ public class ParkingDataManagerImpl<T extends Vehicle> implements ParkingDataMan
 		return -1;
 	}
 
-	public boolean leaveCar(int slotNumber) {
-		if(parkingMap.containsKey(slotNumber)) {
+	public int leaveCar(Vehicle vehicle) {
+		if(parkingMap.containsKey(vehicle)) {
+			int slotNumber = parkingMap.get(vehicle);
 			parkSlot[slotNumber] = 0;
-			parkingMap.remove(slotNumber);
-			return true;
+			parkingMap.remove(vehicle);
+			return slotNumber;
 		}
-		return false;
+		return -1;
 	}
 
 	public List<String> getStatus() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public int[] getParkSlot() {
+		return parkSlot;
+	}
+
+	public Map<T, Integer> getParkingMap() {
+		return parkingMap;
 	}
 
 }
