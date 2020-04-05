@@ -141,7 +141,7 @@ public class App
 				.append("\n");
 		buffer = buffer.append("C) Remove(Unpark) car from parking                  ---> leave {slot_number}")
 				.append("\n");
-		buffer = buffer.append("D) Print status of parking slot                     ---> status").append("\n");
+		buffer = buffer.append("D) Print status of parking slot                     ---> current_status").append("\n");
 		buffer = buffer.append("D) Print status in particular date                  ---> status_with_date <<start date in format yyyy-mm-dd>> <<end date in format yyyy-mm-dd>>").append("\n");
 		buffer = buffer.append("D) Print status of vehicle in particular date       ---> status_of_vehicle_with_date <<car_number>> <<start date in format yyyy-mm-dd>> <<end date in format yyyy-mm-dd>>").append("\n");
 		System.out.println(buffer.toString());
