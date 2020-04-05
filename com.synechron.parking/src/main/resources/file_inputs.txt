@@ -1,0 +1,20 @@
+create_parking_lot 6
+park KA-01-HH-1234
+park KA-01-HH-9999
+park KA-01-BB-0001
+park KA-01-HH-7777
+park KA-01-HH-2701
+park KA-01-HH-3141
+leave KA-01-HH-3141
+current_status
+park KA-01-P-333
+park DL-12-AA-9999
+status_with_date 2020-04-04 2020-07-10
+leave KA-01-HH-1234
+leave KA-01-BB-0001
+leave DL-12-AA-9999
+status_of_vehicle_with_date KA-01-BB-0001 2020-04-04 2020-07-10
+park KA-09-HH-0987
+park CA-09-IO-1111
+park KA-09-HH-0123
+current_status

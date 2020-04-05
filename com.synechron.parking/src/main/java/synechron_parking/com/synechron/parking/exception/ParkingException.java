@@ -1,12 +1,16 @@
 package synechron_parking.com.synechron.parking.exception;
 
+/**
+ * @author gourav
+ *
+ */
 public class ParkingException extends Exception
 {
 	private static final long serialVersionUID = -3552275262672621625L;
-	
+
 	private String		errorCode		= null;	// this will hold system defined error code
 	private Object[]	errorParameters	= null;	// this will hold parameters for error code/message
-	
+
 	/**
 	 * @param message
 	 * @param throwable
@@ -15,7 +19,7 @@ public class ParkingException extends Exception
 	{
 		super(message, throwable);
 	}
-	
+
 	/**
 	 * @param message
 	 */
@@ -23,7 +27,7 @@ public class ParkingException extends Exception
 	{
 		super(message);
 	}
-	
+
 	/**
 	 * @param throwable
 	 */
@@ -31,7 +35,7 @@ public class ParkingException extends Exception
 	{
 		super(throwable);
 	}
-	
+
 	/**
 	 * @param errorCode
 	 * @param message
@@ -43,7 +47,7 @@ public class ParkingException extends Exception
 		this.setErrorCode(errorCode);
 		this.setErrorParameters(errorParameters);
 	}
-	
+
 	/**
 	 * @param errorCode
 	 * @param message
@@ -54,7 +58,7 @@ public class ParkingException extends Exception
 		super(message, throwable);
 		this.setErrorCode(errorCode);
 	}
-	
+
 	/**
 	 * @param errorCode
 	 * @param message
@@ -67,22 +71,22 @@ public class ParkingException extends Exception
 		this.setErrorCode(errorCode);
 		this.setErrorParameters(errorParameters);
 	}
-	
+
 	public String getErrorCode()
 	{
 		return errorCode;
 	}
-	
+
 	public void setErrorCode(String errorCode)
 	{
 		this.errorCode = errorCode;
 	}
-	
+
 	public Object[] getErrorParameters()
 	{
 		return errorParameters;
 	}
-	
+
 	public void setErrorParameters(Object[] errorParameters)
 	{
 		this.errorParameters = errorParameters;

@@ -1,74 +1,127 @@
 package synechron_parking.com.synechron.parking.dao.impl;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import synechron_parking.com.synechron.parking.dao.ParkingDataManager;
+import synechron_parking.com.synechron.parking.model.Parking;
 import synechron_parking.com.synechron.parking.model.Vehicle;
 
+/**
+ * @author gourav
+ *
+ * @param <T>
+ */
 public class ParkingDataManagerImpl<T extends Vehicle> implements ParkingDataManager<T> {
 
-	private int[] parkSlot = new int[500];
+	private Map<Integer, T> parkingSlotMap = new HashMap<Integer, T>();
+
+	private Map<String, Integer> parkedVehicleMap = new HashMap<>();
 	
-	private Map<T, Integer> parkingMap = new HashMap<T, Integer>();
-	
+	private List<Vehicle> vehicleList = new ArrayList<>();
+
+	@SuppressWarnings("rawtypes")
 	private static ParkingDataManagerImpl instance = null;
 	
+	private static Parking parking = null;
+
 	private ParkingDataManagerImpl() {
 	}
 
-	public static <T extends Vehicle> ParkingDataManagerImpl<T> getInstance(){
+	@SuppressWarnings("unchecked")
+	public static <T extends Vehicle> ParkingDataManagerImpl<T> getInstance(int capacity){
 		if(instance == null) {
 			synchronized (ParkingDataManagerImpl.class) {
 				if(instance == null) {
 					instance = new ParkingDataManagerImpl<T>();
-					for(int i = 0; i < 500; i++) {
-						instance.parkSlot[i] = 0;
-					}
+					parking = Parking.getInstance(capacity);
 				}
 			}
 		}
 		return instance;
 	}
-	
+
 
 	public int parkCar(T vehicle) {
-		for(int i = 0; i < parkSlot.length; i++) {
-			if(parkSlot[i] == 0) {
-				if(parkingMap.containsKey(vehicle)) {
+		for(int i = 1; i < parking.getParkSlot().length; i++) {
+			if(parking.getParkSlot()[i] == 0) {
+				if(parkedVehicleMap.containsKey(vehicle.getRegistrationNumber())) {
 					return -2;
 				}
-				parkingMap.put(vehicle, i);
-				parkSlot[i] = 1;
+				parkingSlotMap.put(i, vehicle);
+				parkedVehicleMap.put(vehicle.getRegistrationNumber(), i);
+				parking.getParkSlot()[i] = 1;
+				vehicle.setEntryDate(java.time.LocalDate.now());
+				vehicle.setEntryTime(java.time.LocalTime.now());
+				vehicle.setSlotNumber(i);
+				vehicleList.add(vehicle);
 				return i;
 			}
 		}
 		return -1;
 	}
 
-	public int leaveCar(Vehicle vehicle) {
-		if(parkingMap.containsKey(vehicle)) {
-			int slotNumber = parkingMap.get(vehicle);
-			parkSlot[slotNumber] = 0;
-			parkingMap.remove(vehicle);
+	public int leaveCar(String registrationNumber) {
+		if(parkedVehicleMap.containsKey(registrationNumber)) {
+			int slotNumber = parkedVehicleMap.get(registrationNumber);
+			parking.getParkSlot()[slotNumber] = 0;
+			parkingSlotMap.remove(slotNumber);
+			parkedVehicleMap.remove(registrationNumber);
+			Vehicle localVehicle  = vehicleList.stream().filter(vehicle->registrationNumber.equals(vehicle.getRegistrationNumber())).findAny().orElse(null);
+			localVehicle.setExitDate(java.time.LocalDate.now());
+			localVehicle.setExitTime(java.time.LocalTime.now());
 			return slotNumber;
 		}
 		return -1;
 	}
 
-	public List<String> getStatus() {
-		// TODO Auto-generated method stub
-		return null;
+	public void doCleanup()
+	{
+		parkingSlotMap.clear();
+		parkedVehicleMap.clear();
+		parking.setParkSlot(null);
+		instance = null;
+	}
+	
+	public Map<Integer, T> getStatus() {
+		return getParkingSlotMap();
 	}
 
 	public int[] getParkSlot() {
-		return parkSlot;
+		return parking.getParkSlot();
 	}
 
-	public Map<T, Integer> getParkingMap() {
-		return parkingMap;
+	public Map<Integer, T> getParkingSlotMap() {
+		return parkingSlotMap;
 	}
 
+	public Map<String, Integer> getParkedVehicleMap() {
+		return parkedVehicleMap;
+	}
+
+	@Override
+	public List<Vehicle> getVehicleListBetweenDates(LocalDate startLocalDate, LocalDate endLocalDate) {
+		List<Vehicle> statusList = new ArrayList<>();
+		for(Vehicle eachVehicle : vehicleList) {
+			if(eachVehicle.getEntryDate().isAfter(startLocalDate) && eachVehicle.getEntryDate().isBefore(endLocalDate)){
+				statusList.add(eachVehicle);
+			}
+		}
+		return statusList;
+	}
+
+	@Override
+	public List<Vehicle> getVehicleEntryDetails(String registrationNumber, LocalDate startLocalDate,
+			LocalDate endLocalDate) {
+		List<Vehicle> entryList = new ArrayList<>();
+		for(Vehicle eachVehicle : vehicleList) {
+			if(registrationNumber.equals(eachVehicle.getRegistrationNumber()) && eachVehicle.getEntryDate().isAfter(startLocalDate) && eachVehicle.getEntryDate().isBefore(endLocalDate)){
+				entryList.add(eachVehicle);
+			}
+		}
+		return entryList;
+	}
 }
